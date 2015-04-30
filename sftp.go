@@ -46,6 +46,7 @@ const (
 	ssh_FX_NO_CONNECTION     = 6
 	ssh_FX_CONNECTION_LOST   = 7
 	ssh_FX_OP_UNSUPPORTED    = 8
+	ssh_FX_OP_UNKNOWN        = 9 // codes => this value are not defined in the spec.
 )
 
 const (
@@ -185,3 +186,7 @@ type StatusError struct {
 }
 
 func (s *StatusError) Error() string { return fmt.Sprintf("sftp: %q (%v)", s.msg, fx(s.Code)) }
+
+// IsUnknown returns true if the status code holds a value not defined in the SFTP specification,
+// as might be returned from a non-compliant server.
+func (s *StatusError) IsUnknown() bool { return s.Code >= ssh_FX_OP_UNKNOWN }
